@@ -4,7 +4,7 @@ SELECT SUM(AdvEngineID), COUNT(*), AVG(ResolutionWidth) FROM hits;
 SELECT AVG(UserID) FROM hits;
 SELECT COUNT(DISTINCT UserID) FROM hits;
 SELECT COUNT(DISTINCT SearchPhrase) FROM hits;
-SELECT MIN(EventDate), MAX(EventDate) FROM hits;
+SELECT ToDateTime(MIN(processedEventDate) * 86400000, 'yyyy-MM-dd') as Min_processedEventDate, ToDateTime(MAX(processedEventDate) * 86400000, 'yyyy-MM-dd') as Max_processedEventDate FROM hits;
 SELECT AdvEngineID, COUNT(*) FROM hits WHERE AdvEngineID <> 0 GROUP BY AdvEngineID ORDER BY COUNT(*) DESC;
 SELECT RegionID, COUNT(DISTINCT UserID) AS u FROM hits GROUP BY RegionID ORDER BY u DESC LIMIT 10;
 SELECT RegionID, SUM(AdvEngineID), COUNT(*) AS c, AVG(ResolutionWidth), COUNT(DISTINCT UserID) FROM hits GROUP BY RegionID ORDER BY c DESC LIMIT 10;
@@ -16,7 +16,7 @@ SELECT SearchEngineID, SearchPhrase, COUNT(*) AS c FROM hits WHERE SearchPhrase 
 SELECT UserID, COUNT(*) FROM hits GROUP BY UserID ORDER BY COUNT(*) DESC LIMIT 10;
 SELECT UserID, SearchPhrase, COUNT(*) FROM hits GROUP BY UserID, SearchPhrase ORDER BY COUNT(*) DESC LIMIT 10;
 SELECT UserID, SearchPhrase, COUNT(*) FROM hits GROUP BY UserID, SearchPhrase LIMIT 10;
-SELECT UserID, extract(minute FROM EventTime) AS m, SearchPhrase, COUNT(*) FROM hits GROUP BY UserID, m, SearchPhrase ORDER BY COUNT(*) DESC LIMIT 10;
+SET numGroupsLimit = '1000000'; SELECT UserID, MINUTE(processedEventTime * 1000) AS m, SearchPhrase, COUNT(*) AS count FROM hits WHERE SearchPhrase IS NOT NULL AND SearchPhrase <> '' GROUP BY UserID, m, SearchPhrase ORDER BY count DESC LIMIT 10;
 SELECT UserID FROM hits WHERE UserID = 435090932899640449;
 SELECT COUNT(*) FROM hits WHERE URL LIKE '%google%';
 SELECT SearchPhrase, MIN(URL), COUNT(*) AS c FROM hits WHERE URL LIKE '%google%' AND SearchPhrase <> '' GROUP BY SearchPhrase ORDER BY c DESC LIMIT 10;

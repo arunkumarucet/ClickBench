@@ -9,9 +9,20 @@
   },
   "tableIndexConfig":{},
   "metadata":{},
-  "tenants":
-  {
+  "tenants": {
 	  "server": "DefaultTenant",
 	  "broker": "DefaultTenant"
+  },
+  "ingestionConfig": {
+    "transformConfigs": [
+      {
+        "columnName": "processedEventDate",
+        "transformFunction": "toEpochDays(FromDateTime(EventDate, 'yyyy-MM-dd'))"
+      },
+      {
+        "columnName": "processedEventTime",
+        "transformFunction": "toEpochSeconds(FromDateTime(EventTime, 'yyyy-MM-dd HH:mm:ss'))"
+      }
+    ]
   }
 }

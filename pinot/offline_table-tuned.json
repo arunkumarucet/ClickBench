@@ -1,0 +1,107 @@
+{
+  "tableName": "hits",
+  "tableType": "OFFLINE",
+  "segmentsConfig": {
+    "segmentPushType": "APPEND",
+    "segmentAssignmentStrategy": "BalanceNumSegmentAssignmentStrategy",
+    "schemaName": "hits",
+    "replication": "1",
+    "replicasPerPartition": "1",
+    "timeColumnName": "processedEventDate",
+    "timeType": "DAYS",
+    "segmentPushFrequency": "HOURLY",
+    "segmentIngestionType": "APPEND"
+  },
+  "tableIndexConfig": {
+    "loadMode": "MMAP",
+    "columnMinMaxValueGeneratorMode": "TIME",
+    "createInvertedIndexDuringSegmentGeneration": true,
+    "sortedColumn": [
+      "processedEventDate"
+    ],
+    "invertedIndexColumns": [
+      "CounterID",
+      "AdvEngineID",
+      "SearchEngineID",
+      "RegionID",
+      "MobilePhoneModel",
+      "TraficSourceID",
+      "IsRefresh",
+      "DontCountHits"
+    ],
+    "rangeIndexColumns": [
+      "processedEventDate"
+    ],
+    "bloomFilterColumns": [
+      "UserID",
+      "WatchID"
+    ],
+    "textIndexColumns": [
+      "URL",
+      "Title"
+    ],
+    "starTreeIndexConfigs": [
+      {
+        "dimensionsSplitOrder": [
+          "CounterID",
+          "EventDate",
+          "RegionID",
+          "SearchEngineID",
+          "AdvEngineID",
+          "TraficSourceID",
+          "MobilePhoneModel"
+        ],
+        "skipStarNodeCreationForDimensions": [],
+        "functionColumnPairs": [
+          "COUNT_STAR",
+          "COUNT_DISTINCT_UserID",
+          "COUNT_DISTINCT_SearchPhrase",
+          "SUM_AdvEngineID",
+          "SUM_IsRefresh",
+          "AVG_ResolutionWidth"
+        ],
+        "maxLeafRecords": 100
+      }
+    ],
+    "enableDefaultStarTree": false,
+    "enableDynamicStarTreeCreation": false,
+    "noDictionaryColumns": [
+      "Title",
+      "URL",
+      "Referer"
+    ],
+    "onHeapDictionaryColumns": [],
+    "varLengthDictionaryColumns": []
+  },
+  "metadata": {
+    "customConfigs": {
+      "pinot.table.config.boost": "1.5",
+      "pinot.server.query.executor.timeout": "300000"
+    }
+  },
+  "tenants": {
+    "server": "DefaultTenant",
+    "broker": "DefaultTenant"
+  },
+  "routing": {
+    "segmentPrunerTypes": [
+      "partition",
+      "time"
+    ]
+  },
+  "query": {
+    "timeoutMs": 300000
+  },
+  "ingestionConfig": {
+    "transformConfigs": [
+      {
+        "columnName": "processedEventDate",
+        "transformFunction": "toEpochDays(FromDateTime(EventDate, 'yyyy-MM-dd'))"
+      },
+      {
+        "columnName": "processedEventTime",
+        "transformFunction": "toEpochSeconds(FromDateTime(EventTime, 'yyyy-MM-dd HH:mm:ss'))"
+      }
+    ]
+  }
+}

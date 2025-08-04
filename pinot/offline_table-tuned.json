@@ -53,12 +53,10 @@
         ],
         "skipStarNodeCreationForDimensions": [],
         "functionColumnPairs": [
-          "COUNT_STAR",
-          "COUNT_DISTINCT_UserID",
-          "COUNT_DISTINCT_SearchPhrase",
-          "SUM_AdvEngineID",
-          "SUM_IsRefresh",
-          "AVG_ResolutionWidth"
+          "COUNT__STAR",
+          "SUM__AdvEngineID",
+          "SUM__IsRefresh",
+          "AVG__ResolutionWidth"
         ],
         "maxLeafRecords": 100
       }

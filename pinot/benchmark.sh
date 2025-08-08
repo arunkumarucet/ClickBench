@@ -37,8 +37,8 @@ echo -n "File Cleanup time: "
 command time -f '%e' sed parts93.tsv -e 's/"tatuirovarki_redmond/tatuirovarki_redmond/g' -i
 
 # Fix path to local directory
-sed splitted.yaml 's/PWD_DIR_PLACEHOLDER/'$PWD'/g' -i
-sed local.yaml 's/PWD_DIR_PLACEHOLDER/'$PWD'/g' -i
+sed -i "s|PWD_DIR_PLACEHOLDER|$PWD|g" splitted.yaml
+sed -i "s|PWD_DIR_PLACEHOLDER|$PWD|g" local.yaml
 
 # Load data
 echo -n "Load time: "

@@ -5,39 +5,24 @@
     "segmentPushType": "APPEND",
     "segmentAssignmentStrategy": "BalanceNumSegmentAssignmentStrategy",
     "schemaName": "hits",
-    "replication": "1",
-    "replicasPerPartition": "1",
-    "timeColumnName": "processedEventDate",
-    "timeType": "DAYS",
-    "segmentPushFrequency": "HOURLY",
-    "segmentIngestionType": "APPEND"
+    "replication": "1"
   },
   "tableIndexConfig": {
-    "loadMode": "MMAP",
-    "columnMinMaxValueGeneratorMode": "TIME",
-    "createInvertedIndexDuringSegmentGeneration": true,
-    "sortedColumn": [
-      "processedEventDate"
-    ],
     "invertedIndexColumns": [
-      "CounterID",
-      "AdvEngineID",
-      "SearchEngineID",
-      "RegionID",
-      "MobilePhoneModel",
-      "TraficSourceID",
-      "IsRefresh",
-      "DontCountHits"
-    ],
-    "rangeIndexColumns": [
-      "processedEventDate"
-    ],
-    "bloomFilterColumns": [
       "UserID",
-      "WatchID"
+      "AdvEngineID",
+      "RegionID",
+      "CounterID",
+      "SearchEngineID",
+      "TraficSourceID",
+      "MobilePhoneModel",
+      "IsRefresh",
+      "DontCountHits",
+      "URLHash"
     ],
     "textIndexColumns": [
       "URL",
+<<<<<<< Updated upstream
       "Title"
     ],
     "starTreeIndexConfigs": [
@@ -64,31 +49,30 @@
     "enableDefaultStarTree": false,
     "enableDynamicStarTreeCreation": false,
     "noDictionaryColumns": [
+=======
+>>>>>>> Stashed changes
       "Title",
-      "URL",
+      "SearchPhrase",
       "Referer"
     ],
-    "onHeapDictionaryColumns": [],
-    "varLengthDictionaryColumns": []
-  },
-  "metadata": {
-    "customConfigs": {
-      "pinot.table.config.boost": "1.5",
-      "pinot.server.query.executor.timeout": "300000"
+    "segmentPartitionConfig": {
+      "columnPartitionMap": {
+        "UserID": {
+          "functionName": "Murmur",
+          "numPartitions": 128
+        }
+      }
     }
   },
   "tenants": {
     "server": "DefaultTenant",
     "broker": "DefaultTenant"
   },
+  "metadata": {},
   "routing": {
     "segmentPrunerTypes": [
-      "partition",
-      "time"
+      "partition"
     ]
-  },
-  "query": {
-    "timeoutMs": 300000
   },
   "ingestionConfig": {
     "transformConfigs": [

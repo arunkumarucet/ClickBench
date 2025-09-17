@@ -2,59 +2,58 @@
   "tableName": "hits",
   "tableType": "OFFLINE",
   "segmentsConfig": {
-    "segmentPushType": "APPEND",
-    "segmentAssignmentStrategy": "BalanceNumSegmentAssignmentStrategy",
     "schemaName": "hits",
-    "replication": "1"
+    "replication": "1",
+    "timeColumnName": "processedEventTime",
+    "timeType": "SECONDS",
+    "segmentPushType": "APPEND",
+    "segmentAssignmentStrategy": "BalanceNumSegmentAssignmentStrategy"
+  },
+  "tenants": {
+    "server": "DefaultTenant",
+    "broker": "DefaultTenant"
   },
   "tableIndexConfig": {
     "invertedIndexColumns": [
       "UserID",
+      "CounterID",
       "AdvEngineID",
       "RegionID",
-      "CounterID",
-      "SearchEngineID",
+      "OS",
+      "UserAgent",
+      "URLCategoryID",
       "TraficSourceID",
-      "MobilePhoneModel",
+      "SearchEngineID",
+      "BrowserCountry",
+      "BrowserLanguage",
+      "HitColor",
+      "MobilePhone",
+      "IsMobile",
       "IsRefresh",
-      "DontCountHits",
-      "URLHash"
+      "GoodEvent",
+      "DontCountHits"
     ],
-    "textIndexColumns": [
+    "noDictionaryColumns": [
+      "OriginalURL",
+      "SearchPhrase",
+      "Referer",
       "URL",
-<<<<<<< Updated upstream
       "Title"
     ],
+    "rangeIndexColumns": [
+      "ResolutionWidth",
+      "ResolutionHeight",
+      "HistoryLength"
+    ],
     "starTreeIndexConfigs": [
-      {
-        "dimensionsSplitOrder": [
-          "CounterID",
-          "EventDate",
-          "RegionID",
-          "SearchEngineID",
-          "AdvEngineID",
-          "TraficSourceID",
-          "MobilePhoneModel"
-        ],
-        "skipStarNodeCreationForDimensions": [],
-        "functionColumnPairs": [
-          "COUNT__STAR",
-          "SUM__AdvEngineID",
-          "SUM__IsRefresh",
-          "AVG__ResolutionWidth"
-        ],
-        "maxLeafRecords": 100
-      }
-    ],
-    "enableDefaultStarTree": false,
-    "enableDynamicStarTreeCreation": false,
-    "noDictionaryColumns": [
-=======
->>>>>>> Stashed changes
-      "Title",
-      "SearchPhrase",
-      "Referer"
-    ],
+    {
+      "dimensionsSplitOrder": ["RegionID", "SearchEngineID", "TraficSourceID"],
+      "functionColumnPairs": [
+        "AVG__ResolutionWidth"
+      ],
+      "maxLeafRecords": 10000
+    }
+  ],
     "segmentPartitionConfig": {
       "columnPartitionMap": {
         "UserID": {
@@ -64,25 +63,33 @@
       }
     }
   },
-  "tenants": {
-    "server": "DefaultTenant",
-    "broker": "DefaultTenant"
+  "fieldConfigList":[
+  {
+     "name": "URL",
+     "encodingType": "RAW",
+     "indexTypes": ["TEXT"]
   },
-  "metadata": {},
+  {
+     "name":"Title",
+     "encodingType": "RAW",
+     "indexTypes": ["TEXT"]
+  }
+],
   "routing": {
     "segmentPrunerTypes": [
+      "time",
       "partition"
     ]
   },
   "ingestionConfig": {
     "transformConfigs": [
       {
-        "columnName": "processedEventDate",
-        "transformFunction": "toEpochDays(FromDateTime(EventDate, 'yyyy-MM-dd'))"
+        "columnName": "processedEventTime",
+        "transformFunction": "toEpochSeconds(FromDateTime(LocalEventTime, 'yyyy-MM-dd HH:mm:ss'))"
       },
       {
-        "columnName": "processedEventTime",
-        "transformFunction": "toEpochSeconds(FromDateTime(EventTime, 'yyyy-MM-dd HH:mm:ss'))"
+        "columnName": "processedEventDate",
+        "transformFunction": "toEpochDays(FromDateTime(EventDate, 'yyyy-MM-dd'))"
       }
     ]
   }

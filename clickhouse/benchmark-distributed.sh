@@ -14,7 +14,7 @@ sudo apt-get update
 sudo apt-get install -y apt-transport-https ca-certificates curl gnupg
 
 echo "--- (Local) Step 2: Adding the ClickHouse GPG key... ---"
-curl -fsSL 'https://packages.clickhouse.com/rpm/lts/repodata/repomd.xml.key' | sudo gpg --dearmor -o /usr/share/keyrings/clickhouse-keyring.gpg
+curl -fsSL 'https://packages.clickhouse.com/rpm/lts/repodata/repomd.xml.key' | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/clickhouse-keyring.gpg
 
 echo "--- (Local) Step 3: Adding the ClickHouse APT repository... ---"
 ARCH=$(dpkg --print-architecture)
@@ -37,26 +37,26 @@ ssh "clickhouse-02" << EOF
     set -e
 
     echo "--- (Remote) Step 1: Installing prerequisite packages... ---"
-    sudo apt-get update
-    sudo apt-get install -y apt-transport-https ca-certificates curl gnupg
+    sudo DEBIAN_FRONTEND=noninteractive apt-get update
+    sudo DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https ca-certificates curl gnupg
 
     echo "--- (Remote) Step 2: Adding the ClickHouse GPG key... ---"
-    curl -fsSL 'https://packages.clickhouse.com/rpm/lts/repodata/repomd.xml.key' | sudo gpg --dearmor -o /usr/share/keyrings/clickhouse-keyring.gpg
+    curl -fsSL 'https://packages.clickhouse.com/rpm/lts/repodata/repomd.xml.key' | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/clickhouse-keyring.gpg
 
     echo "--- (Remote) Step 3: Adding the ClickHouse APT repository... ---"
     ARCH=$(dpkg --print-architecture)
     echo "deb [signed-by=/usr/share/keyrings/clickhouse-keyring.gpg arch=${ARCH}] https://packages.clickhouse.com/deb stable main" | sudo tee /etc/apt/sources.list.d/clickhouse.list
 
     echo "--- (Remote) Step 4: Updating package lists... ---"
-    sudo apt-get update
+    sudo DEBIAN_FRONTEND=noninteractive apt-get update
 
     echo "--- (Remote) Step 5: Installing clickhouse-server... ---"
-    sudo apt-get install -y clickhouse-server clickhouse-client
+    sudo DEBIAN_FRONTEND=noninteractive apt-get install -y clickhouse-server clickhouse-client
 
     echo "--- (Remote) Installation complete! ---"
 
-    sudo cp config-${SUFFIX}/server-02.xml /etc/clickhouse-server/config.xml
-    sudo cp config-${SUFFIX}/users.xml /etc/clickhouse-server/users.xml
+    sudo cp /home/ubuntu/ClickBench/clickhouse/config-${SUFFIX}/server-02.xml /etc/clickhouse-server/config.xml
+    sudo cp /home/ubuntu/ClickBench/clickhouse/config-${SUFFIX}/users.xml /etc/clickhouse-server/users.xml
 EOF
 
 # Install clickhouse-keeper on the remote host (clickhouse-keeper-01)
@@ -65,24 +65,24 @@ ssh "clickhouse-keeper-01" << EOF
     set -e
 
     echo "--- (Remote) Step 1: Installing prerequisite packages... ---"
-    sudo apt-get update
-    sudo apt-get install -y apt-transport-https ca-certificates curl gnupg
+    sudo DEBIAN_FRONTEND=noninteractive apt-get update
+    sudo DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https ca-certificates curl gnupg
 
     echo "--- (Remote) Step 2: Adding the ClickHouse GPG key... ---"
-    curl -fsSL 'https://packages.clickhouse.com/rpm/lts/repodata/repomd.xml.key' | sudo gpg --dearmor -o /usr/share/keyrings/clickhouse-keyring.gpg
+    curl -fsSL 'https://packages.clickhouse.com/rpm/lts/repodata/repomd.xml.key' | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/clickhouse-keyring.gpg
 
     echo "--- (Remote) Step 3: Adding the ClickHouse APT repository... ---"
     ARCH=$(dpkg --print-architecture)
     echo "deb [signed-by=/usr/share/keyrings/clickhouse-keyring.gpg arch=${ARCH}] https://packages.clickhouse.com/deb stable main" | sudo tee /etc/apt/sources.list.d/clickhouse.list
 
     echo "--- (Remote) Step 4: Updating package lists... ---"
-    sudo apt-get update
+    sudo DEBIAN_FRONTEND=noninteractive apt-get update
 
     echo "--- (Remote) Step 5: Installing clickhouse-keeper... ---"
-    sudo apt-get install -y clickhouse-keeper
+    sudo DEBIAN_FRONTEND=noninteractive apt-get install -y clickhouse-keeper
 
     echo "--- (Remote) Installation complete! ---"
-    sudo cp config-${SUFFIX}/keeper-01.xml "clickhouse-keeper-01":/etc/clickhouse-keeper/keeper_config.xml
+    sudo cp /home/ubuntu/ClickBench/clickhouse/config-${SUFFIX}/keeper-01.xml /etc/clickhouse-keeper/keeper_config.xml
 EOF
 
 # Start clickhouse-server on the local host (clickhouse-01)
@@ -100,7 +100,17 @@ EOF
 
 for _ in {1..300}
 do
-    clickhouse-client --query "SELECT 1" && break
+    if clickhouse-client --query "SELECT 1" 2>/dev/null; then
+        echo "ClickHouse server is responding, checking keeper connection..."
+        # Test if ClickHouse can connect to the keeper
+        if clickhouse-client --query "SELECT * FROM system.zookeeper WHERE path = '/'" 2>/dev/null; then
+            echo "ClickHouse server is ready and connected to keeper!"
+            break
+        else
+            echo "ClickHouse server is ready but keeper connection not established yet..."
+        fi
+    fi
+    echo "Waiting for ClickHouse server... (attempt $_)"
     sleep 1
 done
 
@@ -110,7 +120,7 @@ clickhouse-client < create-tuned-"$SUFFIX".sql
 
 seq 0 99 | xargs -P100 -I{} bash -c 'wget --continue --progress=dot:giga https://datasets.clickhouse.com/hits_compatible/athena_partitioned/hits_{}.parquet'
 sudo mv hits_*.parquet /var/lib/clickhouse/user_files/
-sudo chown clickhouse:clickhouse /var/lib/clickhouse/user_files/hits_*.parquet
+sudo bash -c 'chown clickhouse:clickhouse /var/lib/clickhouse/user_files/hits_*.parquet'
 
 echo -n "Load time: "
 clickhouse-client --time --query "INSERT INTO hits SELECT * FROM file('hits_*.parquet')" --max-insert-threads $(( $(nproc) / 4 ))

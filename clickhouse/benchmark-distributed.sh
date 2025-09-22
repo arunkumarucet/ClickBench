@@ -10,8 +10,8 @@ fi
 
 # Install clickhouse-server on the local host (clickhouse-01)
 echo "--- (Local) Step 1: Installing prerequisite packages... ---"
-sudo apt-get update
-sudo apt-get install -y apt-transport-https ca-certificates curl gnupg
+sudo DEBIAN_FRONTEND=noninteractive apt-get update
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https ca-certificates curl gnupg
 
 echo "--- (Local) Step 2: Adding the ClickHouse GPG key... ---"
 curl -fsSL 'https://packages.clickhouse.com/rpm/lts/repodata/repomd.xml.key' | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/clickhouse-keyring.gpg
@@ -21,10 +21,10 @@ ARCH=$(dpkg --print-architecture)
 echo "deb [signed-by=/usr/share/keyrings/clickhouse-keyring.gpg arch=${ARCH}] https://packages.clickhouse.com/deb stable main" | sudo tee /etc/apt/sources.list.d/clickhouse.list
 
 echo "--- (Local) Step 4: Updating package lists... ---"
-sudo apt-get update
+sudo DEBIAN_FRONTEND=noninteractive apt-get update
 
 echo "--- (Local) Step 5: Installing clickhouse-keeper... ---"
-sudo apt-get install -y clickhouse-server clickhouse-client
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y clickhouse-server clickhouse-client
 
 echo "--- (Local) Installation complete! ---"
 

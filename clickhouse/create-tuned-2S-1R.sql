@@ -113,5 +113,4 @@ ENGINE = MergeTree
 SETTINGS index_granularity = 1024;
 
 CREATE TABLE IF NOT EXISTS hits ON CLUSTER cluster_2S_1R
-ENGINE = Distributed('cluster_2S_1R', 'default', 'hits_local', rand())
-SETTINGS index_granularity = 1024;
+ENGINE = Distributed('cluster_2S_1R', 'default', 'hits_local', rand());

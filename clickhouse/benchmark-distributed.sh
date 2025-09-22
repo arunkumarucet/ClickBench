@@ -32,7 +32,7 @@ sudo cp config-${SUFFIX}/server-01.xml /etc/clickhouse-server/config.xml
 sudo cp config-${SUFFIX}/users.xml /etc/clickhouse-server/users.xml
 
 # Install clickhouse-server on the remote host (clickhouse-02)
-ssh "clickhouse-02" << EOF
+ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "clickhouse-02" << EOF
     # Exit immediately if a command exits with a non-zero status
     set -e
 
@@ -60,7 +60,7 @@ ssh "clickhouse-02" << EOF
 EOF
 
 # Install clickhouse-keeper on the remote host (clickhouse-keeper-01)
-ssh "clickhouse-keeper-01" << EOF
+ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "clickhouse-keeper-01" << EOF
     # Exit immediately if a command exits with a non-zero status
     set -e
 
@@ -89,12 +89,12 @@ EOF
 sudo systemctl start clickhouse-server
 
 # Start clickhouse-server on the remote host (clickhouse-02)
-ssh "clickhouse-02" << 'EOF'
+ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "clickhouse-02" << 'EOF'
     sudo systemctl start clickhouse-server
 EOF
 
 # Start clickhouse-keeper on the remote host (clickhouse-keeper-01)
-ssh "clickhouse-keeper-01" << 'EOF'
+ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "clickhouse-keeper-01" << 'EOF'
     sudo systemctl start clickhouse-keeper
 EOF
 

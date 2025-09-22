@@ -5,7 +5,7 @@ if [ "$1" != "" ] && [ "$1" != "1S-2R" ] && [ "$1" != "2S-1R" ]; then
     echo "Error: command line argument must be one of {'', '1S-2R', '2S-1R'}"
     exit 1
 elif [ ! -z "$1" ]; then
-    SUFFIX="-$1"
+    SUFFIX="$1"
 fi
 
 TRIES=3

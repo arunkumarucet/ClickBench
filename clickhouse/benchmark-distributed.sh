@@ -5,7 +5,7 @@ if [ "$1" != "" ] && [ "$1" != "1S-2R" ] && [ "$1" != "2S-1R" ]; then
     echo "Error: command line argument must be one of {'', '1S-2R', '2S-1R'}"
     exit 1
 elif [ ! -z "$1" ]; then
-    SUFFIX="-$1"
+    SUFFIX="$1"
 fi
 
 # Install clickhouse-server on the local host (clickhouse-01)
@@ -32,7 +32,7 @@ sudo cp config-${SUFFIX}/server-01.xml /etc/clickhouse-server/config.xml
 sudo cp config-${SUFFIX}/users.xml /etc/clickhouse-server/users.xml
 
 # Install clickhouse-server on the remote host (clickhouse-02)
-ssh "clickhouse-02" << 'EOF'
+ssh "clickhouse-02" << EOF
     # Exit immediately if a command exits with a non-zero status
     set -e
 
@@ -54,13 +54,13 @@ ssh "clickhouse-02" << 'EOF'
     sudo apt-get install -y clickhouse-server clickhouse-client
 
     echo "--- (Remote) Installation complete! ---"
+
+    sudo cp config-${SUFFIX}/server-02.xml /etc/clickhouse-server/config.xml
+    sudo cp config-${SUFFIX}/users.xml /etc/clickhouse-server/users.xml
 EOF
 
-sudo scp config-${SUFFIX}/server-02.xml "clickhouse-02":/etc/clickhouse-server/config.xml
-sudo scp config-${SUFFIX}/users.xml "clickhouse-02":/etc/clickhouse-server/users.xml
-
 # Install clickhouse-keeper on the remote host (clickhouse-keeper-01)
-ssh "clickhouse-keeper-01" << 'EOF'
+ssh "clickhouse-keeper-01" << EOF
     # Exit immediately if a command exits with a non-zero status
     set -e
 
@@ -82,9 +82,8 @@ ssh "clickhouse-keeper-01" << 'EOF'
     sudo apt-get install -y clickhouse-keeper
 
     echo "--- (Remote) Installation complete! ---"
+    sudo cp config-${SUFFIX}/keeper-01.xml "clickhouse-keeper-01":/etc/clickhouse-keeper/keeper_config.xml
 EOF
-
-sudo scp config-${SUFFIX}/keeper-01.xml "clickhouse-keeper-01":/etc/clickhouse-keeper/keeper_config.xml
 
 # Start clickhouse-server on the local host (clickhouse-01)
 sudo systemctl start clickhouse-server

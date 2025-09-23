@@ -1,11 +1,11 @@
 #!/bin/bash
-export JAVA_OPTS="-Xmx16g -Xms16g -XX:+UseG1GC -XX:MaxDirectMemorySize=16384M"
+export JAVA_OPTS="-Xmx8g -Xms8g -XX:+UseG1GC"
 # Determine which set of files to use depending on the type of run
 if [ "$1" != "" ] && [ "$1" != "tuned" ]; then
     echo "Error: command line argument must be one of {'', 'tuned'}"
     exit 1
 elif [ ! -z "$1" ]; then
-    export JAVA_OPTS="-Xmx16g -Xms16g -XX:-UseG1GC -XX:+UseZGC -XX:+ZGenerational -XX:MaxDirectMemorySize=16384M"
+    export JAVA_OPTS="-Xmx8g -Xms8g -XX:-UseG1GC -XX:+UseZGC -XX:+ZGenerational"
     SUFFIX="-$1"
 fi
 PINOT_VERSION=1.3.0
@@ -18,10 +18,11 @@ echo 0 | sudo update-alternatives --config java
 wget --continue --progress=dot:giga https://downloads.apache.org/pinot/apache-pinot-$PINOT_VERSION/apache-pinot-$PINOT_VERSION-bin.tar.gz
 tar -zxvf apache-pinot-$PINOT_VERSION-bin.tar.gz
 
-./apache-pinot-$PINOT_VERSION-bin/bin/pinot-admin.sh StartZookeeper &
+nohup ./apache-pinot-$PINOT_VERSION-bin/bin/pinot-admin.sh StartZookeeper > zookeeper.log 2>&1 &
+sleep 60
+nohup ./apache-pinot-$PINOT_VERSION-bin/bin/pinot-admin.sh StartController -zkAddress pinot-keeper-01:2181 > controller.log 2>&1 &
 sleep 30
-./apache-pinot-$PINOT_VERSION-bin/bin/pinot-admin.sh StartController -zkAddress pinot-keeper-01:2181 &
-./apache-pinot-$PINOT_VERSION-bin/bin/pinot-admin.sh StartBroker -zkAddress pinot-keeper-01:2181 &
+nohup ./apache-pinot-$PINOT_VERSION-bin/bin/pinot-admin.sh StartBroker -zkAddress pinot-keeper-01:2181 > broker.log 2>&1 &
 
 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "pinot-server-01" << EOF
     # Exit immediately if a command exits with a non-zero status
@@ -40,7 +41,7 @@ ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "pinot-server-01
     wget --continue --progress=dot:giga https://downloads.apache.org/pinot/apache-pinot-$PINOT_VERSION/apache-pinot-$PINOT_VERSION-bin.tar.gz
     tar -zxvf apache-pinot-$PINOT_VERSION-bin.tar.gz
 
-    ./apache-pinot-$PINOT_VERSION-bin/bin/pinot-admin.sh StartServer -zkAddress pinot-keeper-01:2181 &
+    nohup ./apache-pinot-$PINOT_VERSION-bin/bin/pinot-admin.sh StartServer -zkAddress pinot-keeper-01:2181 > server.log 2>&1 &
 EOF
 
 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "pinot-server-02" << EOF
@@ -60,7 +61,7 @@ ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "pinot-server-02
     wget --continue --progress=dot:giga https://downloads.apache.org/pinot/apache-pinot-$PINOT_VERSION/apache-pinot-$PINOT_VERSION-bin.tar.gz
     tar -zxvf apache-pinot-$PINOT_VERSION-bin.tar.gz
 
-    ./apache-pinot-$PINOT_VERSION-bin/bin/pinot-admin.sh StartServer -zkAddress pinot-keeper-01:2181 &
+    nohup ./apache-pinot-$PINOT_VERSION-bin/bin/pinot-admin.sh StartServer -zkAddress pinot-keeper-01:2181 > server.log 2>&1 &
 EOF
 
 ./apache-pinot-$PINOT_VERSION-bin/bin/pinot-admin.sh AddTable -tableConfigFile offline_table"$SUFFIX".json -schemaFile schema"$SUFFIX".json -exec

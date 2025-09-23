@@ -1,7 +1,7 @@
 #!/bin/bash
 
 TRIES=3
-cat queries.sql | while read -r query; do
+while IFS= read -r query || [ -n "$query" ]; do
     sync
     echo 3 | sudo tee /proc/sys/vm/drop_caches >/dev/null
     echo -n "["
@@ -12,4 +12,4 @@ cat queries.sql | while read -r query; do
         [[ "$i" != $TRIES ]] && echo -n ", "
     done
     echo "],"
-done
+done < queries.sql

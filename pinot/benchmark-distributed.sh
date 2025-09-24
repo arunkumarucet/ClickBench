@@ -34,8 +34,8 @@ ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "pinot-server-01
         export JAVA_OPTS="-Xmx16g -Xms16g -XX:-UseG1GC -XX:+UseZGC -XX:+ZGenerational -XX:MaxDirectMemorySize=16384M"
     fi
     
-    sudo DEBIAN_FRONTEND=noninteractive apt-get update
-    sudo DEBIAN_FRONTEND=noninteractive apt-get install openjdk-21-jdk jq
+    sudo DEBIAN_FRONTEND=noninteractive apt-get update -y
+    sudo DEBIAN_FRONTEND=noninteractive apt-get install -y openjdk-21-jdk jq
     echo 0 | sudo update-alternatives --config java
     
     wget --continue --progress=dot:giga https://downloads.apache.org/pinot/apache-pinot-$PINOT_VERSION/apache-pinot-$PINOT_VERSION-bin.tar.gz
@@ -54,8 +54,8 @@ ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "pinot-server-02
         export JAVA_OPTS="-Xmx16g -Xms16g -XX:-UseG1GC -XX:+UseZGC -XX:+ZGenerational -XX:MaxDirectMemorySize=16384M"
     fi
     
-    sudo DEBIAN_FRONTEND=noninteractive apt-get update
-    sudo DEBIAN_FRONTEND=noninteractive apt-get install openjdk-21-jdk jq
+    sudo DEBIAN_FRONTEND=noninteractive apt-get update -y
+    sudo DEBIAN_FRONTEND=noninteractive apt-get install -y openjdk-21-jdk jq
     echo 0 | sudo update-alternatives --config java
     
     wget --continue --progress=dot:giga https://downloads.apache.org/pinot/apache-pinot-$PINOT_VERSION/apache-pinot-$PINOT_VERSION-bin.tar.gz

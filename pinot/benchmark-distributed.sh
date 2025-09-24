@@ -13,7 +13,19 @@ PINOT_VERSION=1.3.0
 # Install dependencies & install pinot in pinot-keeper-01
 sudo DEBIAN_FRONTEND=noninteractive apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt-get install openjdk-21-jdk jq
-echo 0 | sudo update-alternatives --config java
+
+# Set up Java alternatives if not already configured
+if ! update-alternatives --list java >/dev/null 2>&1; then
+    echo "Setting up Java alternatives..."
+    sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-21-openjdk-amd64/bin/java 1
+    sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/java-21-openjdk-amd64/bin/javac 1
+    sudo update-alternatives --install /usr/bin/jar jar /usr/lib/jvm/java-21-openjdk-amd64/bin/jar 1
+else
+    echo "Java alternatives already configured"
+fi
+
+# Verify Java installation
+java -version
 
 wget --continue --progress=dot:giga https://downloads.apache.org/pinot/apache-pinot-$PINOT_VERSION/apache-pinot-$PINOT_VERSION-bin.tar.gz
 tar -zxvf apache-pinot-$PINOT_VERSION-bin.tar.gz
@@ -36,7 +48,19 @@ ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "pinot-server-01
     
     sudo DEBIAN_FRONTEND=noninteractive apt-get update
     sudo DEBIAN_FRONTEND=noninteractive apt-get install openjdk-21-jdk jq
-    echo 0 | sudo update-alternatives --config java
+    
+    # Set up Java alternatives if not already configured
+    if ! update-alternatives --list java >/dev/null 2>&1; then
+        echo "Setting up Java alternatives..."
+        sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-21-openjdk-amd64/bin/java 1
+        sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/java-21-openjdk-amd64/bin/javac 1
+        sudo update-alternatives --install /usr/bin/jar jar /usr/lib/jvm/java-21-openjdk-amd64/bin/jar 1
+    else
+        echo "Java alternatives already configured"
+    fi
+    
+    # Verify Java installation
+    java -version
     
     wget --continue --progress=dot:giga https://downloads.apache.org/pinot/apache-pinot-$PINOT_VERSION/apache-pinot-$PINOT_VERSION-bin.tar.gz
     tar -zxvf apache-pinot-$PINOT_VERSION-bin.tar.gz
@@ -56,7 +80,19 @@ ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "pinot-server-02
     
     sudo DEBIAN_FRONTEND=noninteractive apt-get update
     sudo DEBIAN_FRONTEND=noninteractive apt-get install openjdk-21-jdk jq
-    echo 0 | sudo update-alternatives --config java
+    
+    # Set up Java alternatives if not already configured
+    if ! update-alternatives --list java >/dev/null 2>&1; then
+        echo "Setting up Java alternatives..."
+        sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-21-openjdk-amd64/bin/java 1
+        sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/java-21-openjdk-amd64/bin/javac 1
+        sudo update-alternatives --install /usr/bin/jar jar /usr/lib/jvm/java-21-openjdk-amd64/bin/jar 1
+    else
+        echo "Java alternatives already configured"
+    fi
+    
+    # Verify Java installation
+    java -version
     
     wget --continue --progress=dot:giga https://downloads.apache.org/pinot/apache-pinot-$PINOT_VERSION/apache-pinot-$PINOT_VERSION-bin.tar.gz
     tar -zxvf apache-pinot-$PINOT_VERSION-bin.tar.gz

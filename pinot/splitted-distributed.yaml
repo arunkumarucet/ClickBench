@@ -9,7 +9,7 @@ inputDirURI: 'PWD_DIR_PLACEHOLDER'
 includeFileNamePattern: 'glob:PWD_DIR_PLACEHOLDER/parts??.tsv'
 outputDirURI: 'batch/hits/segments'
 overwriteOutput: true
-segmentCreationJobParallelism: 16
+segmentCreationJobParallelism: 32
 pinotFSSpecs:
   - scheme: file
     className: org.apache.pinot.spi.filesystem.LocalPinotFS
@@ -35,3 +35,4 @@ pinotClusterSpecs:
 pushJobSpec:
   pushAttempts: 10
   pushRetryIntervalMillis: 1000
+  pushParallelism: 24

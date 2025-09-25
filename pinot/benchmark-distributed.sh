@@ -1,11 +1,11 @@
 #!/bin/bash
-export JAVA_OPTS="-Xmx8g -Xms8g -XX:+UseG1GC"
+export JAVA_OPTS="-Xmx1g -Xms1g -XX:+UseG1GC"
 # Determine which set of files to use depending on the type of run
 if [ "$1" != "" ] && [ "$1" != "tuned" ]; then
     echo "Error: command line argument must be one of {'', 'tuned'}"
     exit 1
 elif [ ! -z "$1" ]; then
-    export JAVA_OPTS="-Xmx8g -Xms8g -XX:-UseG1GC -XX:+UseZGC -XX:+ZGenerational"
+    export JAVA_OPTS="-Xmx1g -Xms1g -XX:-UseG1GC -XX:+UseZGC -XX:+ZGenerational"
     SUFFIX="-$1"
 fi
 PINOT_VERSION=1.3.0
@@ -20,6 +20,15 @@ tar -zxvf apache-pinot-$PINOT_VERSION-bin.tar.gz
 
 nohup ./apache-pinot-$PINOT_VERSION-bin/bin/pinot-admin.sh StartZookeeper > zookeeper.log 2>&1 &
 sleep 60
+export JAVA_OPTS="-Xmx2g -Xms2g -XX:+UseG1GC"
+# Determine which set of files to use depending on the type of run
+if [ "$1" != "" ] && [ "$1" != "tuned" ]; then
+    echo "Error: command line argument must be one of {'', 'tuned'}"
+    exit 1
+elif [ ! -z "$1" ]; then
+    export JAVA_OPTS="-Xmx2g -Xms2g -XX:-UseG1GC -XX:+UseZGC -XX:+ZGenerational"
+    SUFFIX="-$1"
+fi
 nohup ./apache-pinot-$PINOT_VERSION-bin/bin/pinot-admin.sh StartController -zkAddress pinot-keeper-01:2181 > controller.log 2>&1 &
 sleep 30
 nohup ./apache-pinot-$PINOT_VERSION-bin/bin/pinot-admin.sh StartBroker -zkAddress pinot-keeper-01:2181 > broker.log 2>&1 &
@@ -82,6 +91,15 @@ command time -f '%e' sed parts93.tsv -e 's/"tatuirovarki_redmond/tatuirovarki_re
 # Fix path to local directory
 sed -i "s|PWD_DIR_PLACEHOLDER|$PWD|g" splitted-distributed.yaml
 
+export JAVA_OPTS="-Xmx16g -Xms16g -XX:+UseG1GC"
+# Determine which set of files to use depending on the type of run
+if [ "$1" != "" ] && [ "$1" != "tuned" ]; then
+    echo "Error: command line argument must be one of {'', 'tuned'}"
+    exit 1
+elif [ ! -z "$1" ]; then
+    export JAVA_OPTS="-Xmx16g -Xms16g -XX:-UseG1GC -XX:+UseZGC -XX:+ZGenerational"
+    SUFFIX="-$1"
+fi
 # Load data
 echo -n "Load time: "
 command time -f '%e' ./apache-pinot-$PINOT_VERSION-bin/bin/pinot-admin.sh LaunchDataIngestionJob -jobSpecFile splitted-distributed.yaml

@@ -82,11 +82,11 @@ gzip -d -f hits.tsv.gz
 
 # Since the uncompressed hits.tsv size is ~75GB, heap size is not sufficient to handle this. Hence, we have to split the data
 echo -n "File Split time: "
-command time -f '%e' split -d --additional-suffix .tsv -n l/100 hits.tsv parts
+command time -f '%e' split -d -a 4 --additional-suffix=.tsv -C 100M hits.tsv parts_
 
 # Pinot can't load value '"tatuirovarki_redmond' so we need to fix this row to make it work
 echo -n "File Cleanup time: "
-command time -f '%e' sed parts93.tsv -e 's/"tatuirovarki_redmond/tatuirovarki_redmond/g' -i
+command time -f '%e' sed parts_0666.tsv -e 's/"tatuirovarki_redmond/tatuirovarki_redmond/g' -i
 
 # Fix path to local directory
 sed -i "s|PWD_DIR_PLACEHOLDER|$PWD|g" splitted-distributed.yaml

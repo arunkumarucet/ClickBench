@@ -31,10 +31,7 @@
       "IsMobile",
       "IsRefresh",
       "GoodEvent",
-      "DontCountHits",
-      "hasSearchPhrase",
-      "hasURL",
-      "hasTitle"
+      "DontCountHits"
     ],
     "noDictionaryColumns": [
       "OriginalURL",
@@ -109,18 +106,6 @@
       {
         "columnName": "processedEventDate",
         "transformFunction": "toEpochDays(FromDateTime(EventDate, 'yyyy-MM-dd'))"
-      },
-      {
-        "columnName": "hasSearchPhrase",
-        "transformFunction": "Groovy({SearchPhrase != null && SearchPhrase != 'null' ? 1 : 0}, SearchPhrase)"
-      },
-      {
-        "columnName": "hasURL",
-        "transformFunction": "Groovy({URL != null && URL != 'null' ? 1 : 0}, URL)"
-      },
-      {
-        "columnName": "hasTitle",
-        "transformFunction": "Groovy({Title != null && Title != 'null' ? 1 : 0}, Title)"
       }
     ]
   }

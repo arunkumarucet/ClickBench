@@ -31,7 +31,10 @@
       "IsMobile",
       "IsRefresh",
       "GoodEvent",
-      "DontCountHits"
+      "DontCountHits",
+      "hasSearchPhrase",
+      "hasURL",
+      "hasTitle"
     ],
     "noDictionaryColumns": [
       "OriginalURL",
@@ -58,7 +61,15 @@
       "columnPartitionMap": {
         "UserID": {
           "functionName": "Murmur",
-          "numPartitions": 128
+          "numPartitions": 8
+        },
+        "RegionID": {
+          "functionName": "Murmur", 
+          "numPartitions": 4
+        },
+        "processedEventDate": {
+          "functionName": "Modulo",
+          "numPartitions": 2
         }
       }
     }
@@ -67,12 +78,20 @@
   {
      "name": "URL",
      "encodingType": "RAW",
-     "indexTypes": ["TEXT"]
+     "indexes": {
+        "text": {
+          "caseSensitive": true
+        }
+    }
   },
   {
      "name":"Title",
      "encodingType": "RAW",
-     "indexTypes": ["TEXT"]
+     "indexes": {
+        "text": {
+          "caseSensitive": true
+        }
+    }
   }
 ],
   "routing": {
@@ -85,11 +104,23 @@
     "transformConfigs": [
       {
         "columnName": "processedEventTime",
-        "transformFunction": "toEpochSeconds(FromDateTime(LocalEventTime, 'yyyy-MM-dd HH:mm:ss'))"
+        "transformFunction": "toEpochSeconds(FromDateTime(EventTime, 'yyyy-MM-dd HH:mm:ss'))"
       },
       {
         "columnName": "processedEventDate",
         "transformFunction": "toEpochDays(FromDateTime(EventDate, 'yyyy-MM-dd'))"
+      },
+      {
+        "columnName": "hasSearchPhrase",
+        "transformFunction": "Groovy({SearchPhrase != null && SearchPhrase != 'null' ? 1 : 0}, SearchPhrase)"
+      },
+      {
+        "columnName": "hasURL",
+        "transformFunction": "Groovy({URL != null && URL != 'null' ? 1 : 0}, URL)"
+      },
+      {
+        "columnName": "hasTitle",
+        "transformFunction": "Groovy({Title != null && Title != 'null' ? 1 : 0}, Title)"
       }
     ]
   }

@@ -59,7 +59,10 @@
     { "name": "EventDate", "dataType": "STRING" },
     { "name": "EventTime", "dataType": "STRING" },
     { "name": "ClientEventTime", "dataType": "STRING" },
-    { "name": "LocalEventTime", "dataType": "STRING" }
+    { "name": "LocalEventTime", "dataType": "STRING" },
+    { "name": "hasSearchPhrase", "dataType": "INT" },
+    { "name": "hasURL", "dataType": "INT" },
+    { "name": "hasTitle", "dataType": "INT" }
   ],
   "metricFieldSpecs": [
     { "name": "ParamPrice", "dataType": "LONG" },

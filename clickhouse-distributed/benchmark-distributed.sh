@@ -47,8 +47,8 @@ ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "clickhouse-02" 
 
     echo "--- (Remote) Installation complete! ---"
 
-    sudo cp /home/ubuntu/ClickBench/clickhouse/config/server-02.xml /etc/clickhouse-server/config.xml
-    sudo cp /home/ubuntu/ClickBench/clickhouse/config/users.xml /etc/clickhouse-server/users.xml
+    sudo cp /home/ubuntu/ClickBench/clickhouse-distributed/config/server-02.xml /etc/clickhouse-server/config.xml
+    sudo cp /home/ubuntu/ClickBench/clickhouse-distributed/config/users.xml /etc/clickhouse-server/users.xml
 EOF
 
 # Install clickhouse-keeper on the remote host (clickhouse-keeper-01)
@@ -74,7 +74,7 @@ ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "clickhouse-keep
     sudo DEBIAN_FRONTEND=noninteractive apt-get install -y clickhouse-keeper
 
     echo "--- (Remote) Installation complete! ---"
-    sudo cp /home/ubuntu/ClickBench/clickhouse/config/keeper-01.xml /etc/clickhouse-keeper/keeper_config.xml
+    sudo cp /home/ubuntu/ClickBench/clickhouse-distributed/config/keeper-01.xml /etc/clickhouse-keeper/keeper_config.xml
 EOF
 
 # Start clickhouse-server on the local host (clickhouse-01)

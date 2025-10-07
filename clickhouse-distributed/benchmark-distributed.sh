@@ -1,13 +1,5 @@
 #!/bin/bash
 
-# Determine which set of files to use depending on the type of run
-if [ "$1" != "" ] && [ "$1" != "1S-2R" ] && [ "$1" != "2S-1R" ]; then
-    echo "Error: command line argument must be one of {'', '1S-2R', '2S-1R'}"
-    exit 1
-elif [ ! -z "$1" ]; then
-    SUFFIX="$1"
-fi
-
 # Install clickhouse-server on the local host (clickhouse-01)
 echo "--- (Local) Step 1: Installing prerequisite packages... ---"
 sudo DEBIAN_FRONTEND=noninteractive apt-get update
@@ -28,8 +20,8 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y clickhouse-server clickho
 
 echo "--- (Local) Installation complete! ---"
 
-sudo cp config-${SUFFIX}/server-01.xml /etc/clickhouse-server/config.xml
-sudo cp config-${SUFFIX}/users.xml /etc/clickhouse-server/users.xml
+sudo cp config/server-01.xml /etc/clickhouse-server/config.xml
+sudo cp config/users.xml /etc/clickhouse-server/users.xml
 
 # Install clickhouse-server on the remote host (clickhouse-02)
 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "clickhouse-02" << EOF
@@ -55,8 +47,8 @@ ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "clickhouse-02" 
 
     echo "--- (Remote) Installation complete! ---"
 
-    sudo cp /home/ubuntu/ClickBench/clickhouse/config-${SUFFIX}/server-02.xml /etc/clickhouse-server/config.xml
-    sudo cp /home/ubuntu/ClickBench/clickhouse/config-${SUFFIX}/users.xml /etc/clickhouse-server/users.xml
+    sudo cp /home/ubuntu/ClickBench/clickhouse/config/server-02.xml /etc/clickhouse-server/config.xml
+    sudo cp /home/ubuntu/ClickBench/clickhouse/config/users.xml /etc/clickhouse-server/users.xml
 EOF
 
 # Install clickhouse-keeper on the remote host (clickhouse-keeper-01)
@@ -82,7 +74,7 @@ ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "clickhouse-keep
     sudo DEBIAN_FRONTEND=noninteractive apt-get install -y clickhouse-keeper
 
     echo "--- (Remote) Installation complete! ---"
-    sudo cp /home/ubuntu/ClickBench/clickhouse/config-${SUFFIX}/keeper-01.xml /etc/clickhouse-keeper/keeper_config.xml
+    sudo cp /home/ubuntu/ClickBench/clickhouse/config/keeper-01.xml /etc/clickhouse-keeper/keeper_config.xml
 EOF
 
 # Start clickhouse-server on the local host (clickhouse-01)
@@ -116,7 +108,7 @@ done
 
 # Load the data
 
-clickhouse-client < create-tuned-"$SUFFIX".sql
+clickhouse-client < create-tuned.sql
 
 seq 0 99 | xargs -P100 -I{} bash -c 'wget --continue --progress=dot:giga https://datasets.clickhouse.com/hits_compatible/athena_partitioned/hits_{}.parquet'
 sudo mv hits_*.parquet /var/lib/clickhouse/user_files/
@@ -127,7 +119,7 @@ clickhouse-client --time --query "INSERT INTO hits SELECT * FROM file('hits_*.pa
 
 # Run the queries
 
-./run-distributed.sh "$1"
+./run-distributed.sh
 
 echo -n "Data size: "
 clickhouse-client --query "SELECT total_bytes FROM system.tables WHERE name = 'hits' AND database = 'default'"

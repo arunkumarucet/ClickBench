@@ -1,16 +1,8 @@
 #!/bin/bash
 
-# Determine which set of files to use depending on the type of run
-if [ "$1" != "" ] && [ "$1" != "1S-2R" ] && [ "$1" != "2S-1R" ]; then
-    echo "Error: command line argument must be one of {'', '1S-2R', '2S-1R'}"
-    exit 1
-elif [ ! -z "$1" ]; then
-    SUFFIX="$1"
-fi
-
 TRIES=3
 QUERY_NUM=1
-cat queries-tuned-"$SUFFIX".sql | while read -r query; do
+cat queries-tuned.sql | while read -r query; do
     [ -z "$FQDN" ] && sync
     [ -z "$FQDN" ] && echo 3 | sudo tee /proc/sys/vm/drop_caches >/dev/null
 

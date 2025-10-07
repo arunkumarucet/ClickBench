@@ -3,7 +3,7 @@ SELECT COUNT(*) FROM hits WHERE AdvEngineID <> 0;
 SELECT SUM(AdvEngineID), COUNT(*), AVG(ResolutionWidth) FROM hits;
 SELECT AVG(UserID) FROM hits;
 SET skipIndexes='UserID=inverted';SELECT COUNT(DISTINCT UserID) FROM hits;
-SELECT COUNT(DISTINCT SearchPhrase) FROM hits;
+SET skipIndexes='SearchPhrase=inverted';SELECT COUNT(DISTINCT SearchPhrase) FROM hits;
 SELECT ToDateTime(MIN(processedEventDate) * 86400000, 'yyyy-MM-dd') as Min_processedEventDate, ToDateTime(MAX(processedEventDate) * 86400000, 'yyyy-MM-dd') as Max_processedEventDate FROM hits;
 SELECT AdvEngineID, COUNT(*) FROM hits WHERE AdvEngineID <> 0 GROUP BY AdvEngineID ORDER BY COUNT(*) DESC LIMIT 20;
 SELECT RegionID, COUNT(DISTINCT UserID) AS u FROM hits GROUP BY RegionID ORDER BY u DESC LIMIT 10;

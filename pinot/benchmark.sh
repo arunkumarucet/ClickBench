@@ -16,8 +16,9 @@ elif [ ! -z "$1" ]; then
     SUFFIX="-$1"
 fi
 git clone https://github.com/apache/pinot.git
-./pinot/mvnw clean install -DskipTests -Pbin-dist -Pbuild-shaded-jar
-
+cd pinot
+./mvnw clean install -DskipTests -Pbin-dist -Pbuild-shaded-jar
+cd ..
 ./pinot/build/bin/pinot-admin.sh QuickStart -type batch &
 sleep 60
 export JAVA_OPTS="-Xmx1g -Xms1g"

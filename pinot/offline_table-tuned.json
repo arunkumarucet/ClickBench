@@ -49,6 +49,8 @@
     {
       "dimensionsSplitOrder": ["RegionID", "SearchEngineID", "TraficSourceID"],
       "functionColumnPairs": [
+        "COUNT__*",
+        "SUM__AdvEngineID",
         "AVG__ResolutionWidth"
       ],
       "maxLeafRecords": 10000

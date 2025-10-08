@@ -84,6 +84,7 @@
           "functionName": "Murmur",
           "numPartitions": 2
         }
+      }
     }
   },
   "fieldConfigList": [

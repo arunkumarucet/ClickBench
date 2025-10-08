@@ -6,7 +6,7 @@ executionFrameworkSpec:
   segmentMetadataPushJobRunnerClassName: 'org.apache.pinot.plugin.ingestion.batch.standalone.SegmentMetadataPushJobRunner'
 jobType: SegmentCreationAndTarPush
 inputDirURI: 'PWD_DIR_PLACEHOLDER'
-includeFileNamePattern: 'glob:PWD_DIR_PLACEHOLDER/parts_*.tsv'
+includeFileNamePattern: 'glob:PWD_DIR_PLACEHOLDER/parts??.tsv'
 outputDirURI: 'batch/hits/segments'
 overwriteOutput: true
 segmentCreationJobParallelism: 16

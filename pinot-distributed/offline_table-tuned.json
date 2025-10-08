@@ -77,7 +77,14 @@
     "enableDefaultStarTree": false,
     "enableDynamicStarTreeCreation": false,
     "aggregateMetrics": true,
-    "nullHandlingEnabled": true
+    "nullHandlingEnabled": true,
+    "segmentPartitionConfig": {
+      "columnPartitionMap": {
+        "CounterID": {
+          "functionName": "Murmur",
+          "numPartitions": 2
+        }
+    }
   },
   "fieldConfigList": [
     {

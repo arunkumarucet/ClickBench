@@ -349,7 +349,7 @@
   },
   {
     "name": "ClientEventTime",
-    "dataType": "STRING"
+    "dataType": "LONG"
   },
   {
     "name": "ParamOrderID",
@@ -390,7 +390,7 @@
   },
   {
     "name": "LocalEventTime",
-    "dataType": "STRING"
+    "dataType": "LONG"
   },
   {
     "name": "BrowserLanguage",
@@ -420,18 +420,18 @@
 
   ],
   "dateTimeFieldSpecs": [
-  {
-    "name": "EventTime",
-    "dataType": "STRING",
-    "format": "1:SECONDS:SIMPLE_DATE_FORMAT:yyyy-MM-dd HH:mm:ss",
-    "granularity": "1:SECONDS"
-  },
-  {
-    "name": "EventDate",
-    "dataType": "STRING",
-    "format": "1:DAYS:SIMPLE_DATE_FORMAT:yyyy-MM-dd",
-    "granularity": "1:DAYS"
-  }
+    {
+      "name": "EventTime",
+      "dataType": "LONG",
+      "format": "1:SECONDS:EPOCH",
+      "granularity": "1:SECONDS"
+    },
+    {
+      "name": "EventDate",
+      "dataType": "LONG",
+      "format": "1:DAYS:EPOCH",
+      "granularity": "1:DAYS"
+    }
   ],
   "schemaName": "hitsSchema"
 }

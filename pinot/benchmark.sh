@@ -81,7 +81,7 @@ done
 sed -i "s|PWD_DIR_PLACEHOLDER|$PWD|g" splitted.yaml
 
 # Load data
-export JAVA_OPTS="-Xmx24g -Xms24g -XX:-UseG1GC -XX:+UseZGC -XX:+ZGenerational" # Adjust based on machine size
+export JAVA_OPTS="-Xmx16g -Xms16g -XX:-UseG1GC -XX:+UseZGC -XX:+ZGenerational" # Adjust based on machine size
 echo -n "Load time: "
 command time -f '%e' ./pinot/build/bin/pinot-admin.sh LaunchDataIngestionJob -jobSpecFile splitted.yaml
 

@@ -1,0 +1,34 @@
+executionFrameworkSpec:
+  name: 'standalone'
+  segmentGenerationJobRunnerClassName: 'org.apache.pinot.plugin.ingestion.batch.standalone.SegmentGenerationJobRunner'
+  segmentTarPushJobRunnerClassName: 'org.apache.pinot.plugin.ingestion.batch.standalone.SegmentTarPushJobRunner'
+  segmentUriPushJobRunnerClassName: 'org.apache.pinot.plugin.ingestion.batch.standalone.SegmentUriPushJobRunner'
+  segmentMetadataPushJobRunnerClassName: 'org.apache.pinot.plugin.ingestion.batch.standalone.SegmentMetadataPushJobRunner'
+jobType: SegmentCreationAndTarPush
+inputDirURI: 'PWD_DIR_PLACEHOLDER'
+includeFileNamePattern: 'glob:PWD_DIR_PLACEHOLDER/part_hits-*.parquet'
+outputDirURI: 'batch/hits/segments'
+overwriteOutput: true
+segmentCreationJobParallelism: 100
+pinotFSSpecs:
+  - scheme: file
+    className: org.apache.pinot.spi.filesystem.LocalPinotFS
+recordReaderSpec:
+  dataFormat: 'parquet'
+  className: 'org.apache.pinot.plugin.inputformat.parquet.ParquetRecordReader'
+  configClassName: 'org.apache.pinot.plugin.inputformat.parquet.ParquetRecordReaderConfig'
+  configs:
+    useParquetNativeRecordReader: "true"
+
+tableSpec:
+  tableName: 'hits'
+  schemaURI: 'http://pinot-keeper-01:9000/tables/hits/schema'
+  tableConfigURI: 'http://pinot-keeper-01:9000/tables/hits'
+
+pinotClusterSpecs:
+  - controllerURI: 'http://pinot-keeper-01:9000'
+
+pushJobSpec:
+  pushAttempts: 10
+  pushRetryIntervalMillis: 1000
+  pushParallelism: 100

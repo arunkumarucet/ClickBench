@@ -122,4 +122,7 @@ clickhouse-client --time --query "INSERT INTO hits SELECT * FROM file('hits_*.pa
 ./run.sh
 
 echo -n "Data size: "
-clickhouse-client --query "SELECT total_bytes FROM system.tables WHERE name = 'hits' AND database = 'default'"
+size_server1=$(clickhouse-client --query "SELECT total_bytes FROM system.tables WHERE name = 'hits_local' AND database = 'default'")
+size_server2=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "clickhouse-server-02" "clickhouse-client --query \"SELECT total_bytes FROM system.tables WHERE name = 'hits_local' AND database = 'default'\"")
+total_size=$((size_server1 + size_server2))
+echo $total_size

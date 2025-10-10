@@ -5,7 +5,7 @@
     "cluster_size": 1,
     "proprietary": "no",
     "tuned": "no",
-    "comment": "Some queries due to data types/no indexing issues. c6a.4xlarge(500GB GP2) with 12GB Heap for QuickStart, 8GB Heap for Data Loading. 60 parts of parquet files used.",
+    "comment": "Some queries due to data types/no indexing issues. c6a.4xlarge(500GB GP2) with 12GB Heap for QuickStart, 8GB Heap for Data Loading. 100 parts of parquet files used.",
     "tags": [
       "Java",
       "column-oriented"

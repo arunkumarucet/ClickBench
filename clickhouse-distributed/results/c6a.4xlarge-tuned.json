@@ -7,8 +7,8 @@
     "tuned":  "yes",
     "tags":  ["C++","column-oriented","ClickHouse derivative"],
     "comment": "2 Servers & 1 Keeper",
-    "load_time": 123.699,
-    "data_size": 14802549243,
+    "load_time": 124,
+    "data_size": null,
     "result": [
         [0.020, 0.005, 0.005],
         [0.031, 0.011, 0.010],

@@ -1,0 +1,108 @@
+{
+  "tableName": "hits",
+  "tableType": "OFFLINE",
+  "segmentsConfig": {
+    "schemaName": "hits",
+    "replication": "1",
+    "timeColumnName": "EventTime",
+    "timeType": "SECONDS",
+    "segmentPushType": "APPEND",
+    "segmentAssignmentStrategy": "BalanceNumSegmentAssignmentStrategy"
+  },
+  "tenants": {
+    "server": "DefaultTenant",
+    "broker": "DefaultTenant"
+  },
+  "tableIndexConfig": {
+    "invertedIndexColumns": [
+      "UserID",
+      "CounterID",
+      "AdvEngineID",
+      "RegionID",
+      "TraficSourceID",
+      "SearchEngineID",
+      "MobilePhone",
+      "IsRefresh",
+      "DontCountHits",
+      "SearchPhrase",
+      "MobilePhoneModel",
+      "ClientIP",
+      "WatchID",
+      "IsLink",
+      "IsDownload",
+      "WindowClientWidth",
+      "WindowClientHeight"
+    ],
+    "noDictionaryColumns": [
+      "OriginalURL",
+      "Referer",
+      "Params",
+      "OpenstatServiceName",
+      "OpenstatCampaignID",
+      "OpenstatAdID",
+      "UserAgentMinor",
+      "OpenstatSourceID",
+      "UTMSource",
+      "PageCharset",
+      "UTMMedium",
+      "UTMCampaign",
+      "ParamOrderID",
+      "ParamCurrency",
+      "UTMContent",
+      "UTMTerm",
+      "FlashMinor2",
+      "FromTag",
+      "SocialSourcePage",
+      "SocialNetwork",
+      "SocialAction",
+      "EventTime",
+      "EventDate",
+      "ClientEventTime",
+      "LocalEventTime",
+      "URL",
+      "Title"
+    ],
+    "starTreeIndexConfigs": [
+      {
+        "dimensionsSplitOrder": ["RegionID", "SearchEngineID", "TraficSourceID"],
+        "functionColumnPairs": [
+          "COUNT__*",
+          "SUM__AdvEngineID",
+          "AVG__ResolutionWidth"
+        ],
+        "maxLeafRecords": 10000
+      }
+    ],
+    "sortedColumn": ["EventTime"],
+    "enableDefaultStarTree": false,
+    "enableDynamicStarTreeCreation": false,
+    "aggregateMetrics": true,
+    "nullHandlingEnabled": true
+  },
+  "fieldConfigList": [
+    {
+      "name": "URL",
+      "encodingType": "RAW",
+      "indexes": {
+        "text": {
+          "caseSensitive": true
+        }
+      }
+    },
+    {
+      "name": "Title",
+      "encodingType": "RAW",
+      "indexes": {
+        "text": {
+          "caseSensitive": true
+        }
+      }
+    }
+  ],
+  "routing": {
+    "segmentPrunerTypes": [
+      "time",
+      "partition"
+    ]
+  }
+}

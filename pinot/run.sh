@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TRIES=3
+TRIES=10 # 3 times not sufficient for hot runs calculating, especially for JVM based systems
 cat queries.sql | while read -r query; do
     sync
     echo 3 | sudo tee /proc/sys/vm/drop_caches >/dev/null

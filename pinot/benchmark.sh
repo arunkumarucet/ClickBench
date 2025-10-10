@@ -29,7 +29,7 @@ seq 0 99 | xargs -P100 -I{} bash -c 'wget --continue --progress=dot:giga https:/
 
 # Install DuckDB to convert binary to string and merge parquet files
 curl -L -o duckdb.zip https://github.com/duckdb/duckdb/releases/latest/download/duckdb_cli-linux-amd64.zip
-unzip -o duckdb.zip && mv duckdb_cli-linux-amd64 duckdb && chmod +x duckdb
+unzip -o duckdb.zip && chmod +x duckdb
 
 mkdir -p duck_temp
 
